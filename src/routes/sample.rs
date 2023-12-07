@@ -5,6 +5,7 @@ use axum::{
     Router,
 };
 use serde::Deserialize;
+use tower_cookies::{cookie::time::Duration, Cookie, Cookies};
 
 pub fn user_route_handler() -> Router {
     Router::new()
@@ -23,7 +24,14 @@ async fn route_with_query(Query(params): Query<HelloParams>) -> impl IntoRespons
     }
 }
 
-async fn route_with_dynamic_path(name: Path<String>) -> impl IntoResponse {
+async fn route_with_dynamic_path(cookies: Cookies, name: Path<String>) -> impl IntoResponse {
     let name = name.to_string();
+    let mut cookie: Cookie<'_> = Cookie::build(("name-v", name.clone())).into();
+
+    if name == "no" {
+        cookie.set_max_age(Duration::hours(0));
+    }
+
+    cookies.add(cookie);
     Html(format!("hello {name} !"))
 }
