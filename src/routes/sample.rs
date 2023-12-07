@@ -7,7 +7,7 @@ use axum::{
 use serde::Deserialize;
 use tower_cookies::{cookie::time::Duration, Cookie, Cookies};
 
-pub fn user_route_handler() -> Router {
+pub fn sample_route_handler() -> Router {
     Router::new()
         .route("/sample", get(route_with_query))
         .route("/sample/:name", get(route_with_dynamic_path))
